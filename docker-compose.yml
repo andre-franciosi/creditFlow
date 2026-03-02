@@ -1,0 +1,30 @@
+services:
+  database:
+    image: mongo:latest
+    container_name: mongodb_creditflow
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: node_backend
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://database:27017/creditFlow
+    depends_on:
+      - database
+
+  frontend:
+    build: ./frontend
+    container_name: react_frontend
+    ports:
+      - "5173:5173"
+    stdin_open: true
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
